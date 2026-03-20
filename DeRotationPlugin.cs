@@ -34,7 +34,7 @@ namespace AltAzDeRotator
         public string Author => "ArchitectJuan";
         public string Description => "Actively compensates for field rotation on Alt-Azimuth mounts.";
         
-        public IPluginVersion Version => new PluginVersion("1.1.1.0");
+        public IPluginVersion Version => new PluginVersion("1.1.0.0");
         public IPluginVersion MinimumApplicationVersion => new PluginVersion("3.0.0.9001");
 
         public string LicenseURL => "https://opensource.org/licenses/MPL-2.0";
