@@ -21,3 +21,7 @@ Refer to the `UserGuide.md` for complete installation and usage instructions.
 ## Building from Source
 This project requires Visual Studio or the .NET 8.0 SDK.
 Run `dotnet build AltAzDeRotator.csproj` to compile the library. Output files are automatically copied to the `Builds\Nina_Rotator_Plugin_V1.0` folder.
+
+<img width="1919" height="1045" alt="image" src="https://github.com/user-attachments/assets/01ff4a47-6c4b-45c0-91f5-5c990f143ca4" />
+<img width="1919" height="1044" alt="image" src="https://github.com/user-attachments/assets/fb85dfe0-59e2-4403-958e-295583d68a73" />
+<img width="455" height="245" alt="image" src="https://github.com/user-attachments/assets/394c7b31-d0e6-4c4b-8207-d081759b905a" />
