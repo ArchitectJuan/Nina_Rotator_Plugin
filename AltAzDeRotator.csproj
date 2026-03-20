@@ -1,18 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <!-- N.I.N.A. 3.x targets .NET 6 or .NET 8 depending on the exact minor version. 
-         Change this to net6.0-windows if you hit compilation issues on N.I.N.A 3.0 -->
     <TargetFramework>net8.0-windows7.0</TargetFramework>
     <UseWPF>true</UseWPF>
     <Platforms>x64</Platforms>
     <PlatformTarget>x64</PlatformTarget>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
-    <OutputPath>Builds\Nina_Rotator_Plugin_V1.1\</OutputPath>
-    <Version>1.1.0.0</Version>
-    <AssemblyVersion>1.1.0.0</AssemblyVersion>
-    <FileVersion>1.1.0.0</FileVersion>
+    <OutputPath>Builds\Nina_Rotator_Plugin_V1.1.1\</OutputPath>
+    <Version>1.1.1.0</Version>
+    <AssemblyVersion>1.1.1.0</AssemblyVersion>
+    <FileVersion>1.1.1.0</FileVersion>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
@@ -25,10 +23,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Resolve System.Text.Json conflict by forcing 9.0.0 -->
+    <PackageReference Include="System.Text.Json" Version="9.0.0" />
     <PackageReference Include="System.ComponentModel.Composition" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Use HintPaths but ensure they don't overwrite local versions if possible -->
     <Reference Include="NINA">
       <HintPath>C:\Program Files\N.I.N.A. - Nighttime Imaging 'N' Astronomy\NINA.dll</HintPath>
       <Private>False</Private>
@@ -61,7 +62,9 @@
 
   <Target Name="CleanupNINADLLs" AfterTargets="Build">
     <ItemGroup>
-      <NINADLLFiles Include="$(OutputPath)NINA.*.dll" />
+      <NINADLLFiles Include="$(OutputPath)NINA*.dll" />
+      <NINADLLFiles Include="$(OutputPath)CommunityToolkit*.dll" />
+      <NINADLLFiles Include="$(OutputPath)System.Text.Json*.dll" />
     </ItemGroup>
     <Delete Files="@(NINADLLFiles)" />
   </Target>

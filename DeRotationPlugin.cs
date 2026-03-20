@@ -1,5 +1,6 @@
 using NINA.Plugin;
 using NINA.Plugin.Interfaces;
+using NINA.Plugin.ManifestDefinition;
 using NINA.Core.Utility;
 using System;
 using System.ComponentModel.Composition;
@@ -7,13 +8,8 @@ using System.Threading.Tasks;
 
 namespace AltAzDeRotator
 {
-    /* 
-     * NINA 3.x discovery works best by exporting IPluginManifest. 
-     * Inheriting from PluginBase allows NINA to automatically fill 
-     * most properties from the AssemblyInfo attributes we defined.
-     */
     [Export(typeof(IPluginManifest))]
-    public class DeRotationPlugin : PluginBase
+    public class DeRotationPlugin : IPluginManifest
     {
         private DeRotationService? _deRotationService;
         private readonly NINA.Equipment.Interfaces.Mediator.ITelescopeMediator _telescopeMediator;
@@ -31,17 +27,41 @@ namespace AltAzDeRotator
             _rotatorMediator = rotatorMediator;
         }
 
-        public override Task Initialize()
+        // --- IPluginManifest Implementation ---
+
+        public string Identifier => "AltAz.DeRotator";
+        public string Name => "Alt-Az De-Rotator";
+        public string Author => "ArchitectJuan";
+        public string Description => "Actively compensates for field rotation on Alt-Azimuth mounts.";
+        
+        public IPluginVersion Version => new PluginVersion("1.1.1.0");
+        public IPluginVersion MinimumApplicationVersion => new PluginVersion("3.0.0.9001");
+
+        public string LicenseURL => "https://opensource.org/licenses/MPL-2.0";
+        public string Homepage => "https://github.com/ArchitectJuan/Nina_Rotator_Plugin";
+        public string Repository => "https://github.com/ArchitectJuan/Nina_Rotator_Plugin.git";
+        public string ChangelogURL => "https://github.com/ArchitectJuan/Nina_Rotator_Plugin/releases";
+        public string License => "MPL-2.0";
+        
+        public string[] Tags => new string[] { "equipment", "rotator", "alt-az" };
+
+        public IPluginDescription Descriptions => null;
+        public IPluginInstallerDetails Installer => null;
+
+        public Task Initialize()
         {
             try
             {
-                Logger.Info("Initializing Alt-Az De-Rotator Plugin...");
+                Logger.Info("Initializing Alt-Az De-Rotator Plugin (V1.1.1)...");
                 
-                // Instantiate and start the background polling service
                 if (_viewModel != null)
                 {
                     _deRotationService = new DeRotationService(_telescopeMediator, _rotatorMediator, _viewModel);
                     _deRotationService.Start();
+                }
+                else 
+                {
+                    Logger.Error("DeRotationPlugin: ViewModel could not be imported. UI initialization failed.");
                 }
                 
                 Logger.Info("Alt-Az De-Rotator Plugin initialized successfully.");
@@ -54,7 +74,7 @@ namespace AltAzDeRotator
             return Task.CompletedTask;
         }
 
-        public override Task Teardown()
+        public Task Teardown()
         {
             try
             {
