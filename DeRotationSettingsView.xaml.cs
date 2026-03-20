@@ -8,7 +8,14 @@ namespace AltAzDeRotator
     {
         public DeRotationSettingsView()
         {
-            InitializeComponent();
+            try
+            {
+                InitializeComponent();
+            }
+            catch (System.Exception ex)
+            {
+                NINA.Core.Utility.Logger.Error($"FAILED TO INITIALIZE UI VIEW: {ex}");
+            }
         }
     }
 }

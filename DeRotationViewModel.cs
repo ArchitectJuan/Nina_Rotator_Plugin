@@ -11,9 +11,24 @@ namespace AltAzDeRotator
     [PartCreationPolicy(CreationPolicy.Shared)]
     public class DeRotationViewModel : DockableVM
     {
+        private DeRotationService? _deRotationService;
+
         [ImportingConstructor]
-        public DeRotationViewModel(IProfileService profileService) : base(profileService)
+        public DeRotationViewModel(
+            IProfileService profileService,
+            NINA.Equipment.Interfaces.Mediator.ITelescopeMediator telescopeMediator,
+            NINA.Equipment.Interfaces.Mediator.IRotatorMediator rotatorMediator) : base(profileService)
         {
+            try
+            {
+                NINA.Core.Utility.Logger.Info("Alt-Az De-Rotator Plugin logic initializing in ViewModel...");
+                _deRotationService = new DeRotationService(telescopeMediator, rotatorMediator, this);
+                _deRotationService.Start();
+            }
+            catch (Exception ex)
+            {
+                NINA.Core.Utility.Logger.Error($"Alt-Az De-Rotator Plugin logic initialization failed: {ex.Message}");
+            }
         }
 
         public new string Id => "AltAz_DeRotator_Status_Window";
@@ -46,6 +61,13 @@ namespace AltAzDeRotator
         {
             get => _targetPosition;
             set { _targetPosition = value; RaisePropertyChanged(); }
+        }
+
+        private double _totalRotationApplied;
+        public double TotalRotationApplied
+        {
+            get => _totalRotationApplied;
+            set { _totalRotationApplied = value; RaisePropertyChanged(); }
         }
 
         private bool _isActive;

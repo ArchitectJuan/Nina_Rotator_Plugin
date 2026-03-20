@@ -1,0 +1,15 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+C:\Dockerhost\Nina_Rotator_Plugin\RotatorOptionsAccessor.cs(8,43): error CS0246: The type or namespace name 'IPluginOptionsAccessor' could not be found (are you missing a using directive or an assembly reference?) [C:\Dockerhost\Nina_Rotator_Plugin\AltAzDeRotator_14ubjtv3_wpftmp.csproj]
+C:\Dockerhost\Nina_Rotator_Plugin\RotatorOptionsAccessor.cs(7,20): error CS0246: The type or namespace name 'IPluginOptionsAccessor' could not be found (are you missing a using directive or an assembly reference?) [C:\Dockerhost\Nina_Rotator_Plugin\AltAzDeRotator_14ubjtv3_wpftmp.csproj]
+C:\Dockerhost\Nina_Rotator_Plugin\DeRotationViewModel.cs(34,27): warning CS0109: The member 'DeRotationViewModel.Id' does not hide an accessible member. The new keyword is not required. [C:\Dockerhost\Nina_Rotator_Plugin\AltAzDeRotator_14ubjtv3_wpftmp.csproj]
+
+Build FAILED.
+
+C:\Dockerhost\Nina_Rotator_Plugin\DeRotationViewModel.cs(34,27): warning CS0109: The member 'DeRotationViewModel.Id' does not hide an accessible member. The new keyword is not required. [C:\Dockerhost\Nina_Rotator_Plugin\AltAzDeRotator_14ubjtv3_wpftmp.csproj]
+C:\Dockerhost\Nina_Rotator_Plugin\RotatorOptionsAccessor.cs(8,43): error CS0246: The type or namespace name 'IPluginOptionsAccessor' could not be found (are you missing a using directive or an assembly reference?) [C:\Dockerhost\Nina_Rotator_Plugin\AltAzDeRotator_14ubjtv3_wpftmp.csproj]
+C:\Dockerhost\Nina_Rotator_Plugin\RotatorOptionsAccessor.cs(7,20): error CS0246: The type or namespace name 'IPluginOptionsAccessor' could not be found (are you missing a using directive or an assembly reference?) [C:\Dockerhost\Nina_Rotator_Plugin\AltAzDeRotator_14ubjtv3_wpftmp.csproj]
+    1 Warning(s)
+    2 Error(s)
+
+Time Elapsed 00:00:01.25

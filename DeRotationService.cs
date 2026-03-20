@@ -56,6 +56,7 @@ namespace AltAzDeRotator
                     if (!_viewModel.IsDeRotationEnabled)
                     {
                         _viewModel.Status = "Disabled";
+                        _viewModel.IsActive = false;
                         await Task.Delay(1000, token);
                         continue;
                     }
@@ -63,19 +64,34 @@ namespace AltAzDeRotator
                     // Utilize mediators
                     if (_telescopeMediator != null && _rotatorMediator != null)
                     {
-                        dynamic? telescope = _telescopeMediator?.GetDevice();
+                        var telescope = _telescopeMediator?.GetDevice() as NINA.Equipment.Interfaces.ITelescope;
+                        var rotatorDevice = _rotatorMediator?.GetDevice() as NINA.Equipment.Interfaces.IRotator;
 
-                        if (telescope != null && telescope.Connected == true)
+                        if (telescope != null && telescope.Connected && rotatorDevice != null && rotatorDevice.Connected)
                         {
+                            _viewModel.Status = "Running";
+                            _viewModel.IsActive = true;
+                            
                             // 1. Get current altitude and azimuth from the mount telemetry
-                            double alt = telescope.Altitude;
-                            double az = telescope.Azimuth;
+                            double alt = 0.0;
+                            double az = 0.0;
+                            double lat = 40.0;
+
+                            try
+                            {
+                                // The mount tracking altitude
+                                alt = telescope.Altitude;
+                                az = telescope.Azimuth;
+                                // The user's geological location
+                                lat = telescope.SiteLatitude;
+                            }
+                            catch (Exception ex)
+                            {
+                                Logger.Error($"Failed to fetch mount telemetry. Mount drivers might not expose Altitude: {ex.Message}");
+                            }
                             
                             _viewModel.Altitude = alt;
                             _viewModel.Azimuth = az;
-
-                            // Let's assume a default latitude for now if we can't fetch it
-                            double lat = 40.0; 
 
                             // 2. Calculate required rotation rate using our MathEngine
                             double requiredRateDegreesPerHour = MathEngine.CalculateRotationRate(alt, az, lat);
@@ -87,10 +103,20 @@ namespace AltAzDeRotator
                             // We can query position from the rotator mediator directly or its info
                             // Let's assume rotatorMediator has GetTargetPosition or similar, 
                             // but we can also use dynamic device object:
-                            dynamic? rotatorDevice = _rotatorMediator?.GetDevice();
-                            if (rotatorDevice != null && rotatorDevice.Connected == true)
+                            // We already verified the rotator is connected above
                             {
-                                double currentRotatorPosition = rotatorDevice.Position;
+                                double currentRotatorPosition = 0;
+                                try
+                                {
+                                    currentRotatorPosition = rotatorDevice.Position;
+                                }
+                                catch (Exception ex)
+                                {
+                                    Logger.Error($"Failed to fetch rotator position: {ex.Message}");
+                                    await Task.Delay(1000, token);
+                                    continue;
+                                }
+                                
                                 double newTargetPosition = currentRotatorPosition + degreesPerSecond;
                                 
                                 newTargetPosition = newTargetPosition % 360.0;
@@ -103,6 +129,7 @@ namespace AltAzDeRotator
                                     // Use the mediator's strongly typed Move method
                                     if (_rotatorMediator != null)
                                     {
+                                        _viewModel.TotalRotationApplied += degreesPerSecond;
                                         _ = Task.Run(() => _rotatorMediator.Move((float)newTargetPosition, token), token);
                                     }
                                 }
@@ -110,7 +137,8 @@ namespace AltAzDeRotator
                         }
                         else
                         {
-                             _viewModel.Status = "Telescope Disconnected";
+                             _viewModel.Status = "Mount and rotator are not connected";
+                             _viewModel.IsActive = false;
                         }
                     }
                     
@@ -125,6 +153,7 @@ namespace AltAzDeRotator
                 {
                     Logger.Error($"Error in DeRotationService background loop: {ex.Message}");
                     _viewModel.Status = $"Error: {ex.Message}";
+                    await Task.Delay(1000, token); // Prevent runaway loop
                 }
             }
         }

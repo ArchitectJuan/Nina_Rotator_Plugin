@@ -14,6 +14,8 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -24,7 +26,22 @@
         <TextBlock Text="Alt-Az De-Rotator" Grid.ColumnSpan="2" FontSize="18" FontWeight="Bold" Margin="0,0,0,10" Foreground="{DynamicResource AccentColorBrush}"/>
 
         <Label Content="Enable De-Rotation:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
-        <CheckBox IsChecked="{Binding IsDeRotationEnabled}" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Margin="5,0,0,0" Content="Active"/>
+        <ToggleButton IsChecked="{Binding IsDeRotationEnabled}" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Margin="5,0,0,0" Width="50" Height="25" FontWeight="Bold">
+            <ToggleButton.Style>
+                <Style TargetType="ToggleButton">
+                    <Setter Property="Content" Value="OFF"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter Property="Content" Value="ON"/>
+                            <Setter Property="Foreground" Value="#00FF00"/>
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="False">
+                            <Setter Property="Foreground" Value="Red"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ToggleButton.Style>
+        </ToggleButton>
 
         <Label Content="Service Status:" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"/>
         <TextBlock Text="{Binding Status}" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" FontWeight="SemiBold" Margin="5,0,0,0"/>
@@ -41,7 +58,10 @@
         <Label Content="Target Position:" Grid.Row="6" Grid.Column="0" VerticalAlignment="Center"/>
         <TextBlock Text="{Binding TargetPosition, StringFormat=\{0:F2\}°}" Grid.Row="6" Grid.Column="1" VerticalAlignment="Center" Margin="5,0,0,0"/>
 
-        <StackPanel Grid.Row="6" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0,20,0,0">
+        <Label Content="Total Rotation Applied:" Grid.Row="7" Grid.Column="0" VerticalAlignment="Center"/>
+        <TextBlock Text="{Binding TotalRotationApplied, StringFormat=\{0:F4\}°}" Grid.Row="7" Grid.Column="1" VerticalAlignment="Center" Margin="5,0,0,0"/>
+
+        <StackPanel Grid.Row="8" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0,20,0,0">
             <Ellipse Width="15" Height="15" Margin="0,0,10,0">
                 <Ellipse.Style>
                     <Style TargetType="Ellipse">
@@ -59,7 +79,7 @@
             </Ellipse>
             <TextBlock VerticalAlignment="Center">
                 <TextBlock.Style>
-                    <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                    <Style TargetType="TextBlock">
                         <Setter Property="Text" Value="Inactive"/>
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding IsActive}" Value="True">
@@ -70,5 +90,8 @@
                 </TextBlock.Style>
             </TextBlock>
         </StackPanel>
+        
+        <TextBlock Grid.Row="8" Grid.ColumnSpan="2" Text="Created by Juan Rodriguez" Foreground="Gray" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,40,0,0"/>
+
     </Grid>
 </UserControl>
