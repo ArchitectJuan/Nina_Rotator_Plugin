@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 [assembly: Guid("6b3e8e2c-7b9a-4c1d-8e5f-2a3b4c5d6e7f")]
 
 // [MANDATORY] Versioning
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("1.1.1.1")]
+[assembly: AssemblyFileVersion("1.1.1.1")]
 
 // [MANDATORY] Meta Data
 [assembly: AssemblyTitle("Alt-Az De-Rotator")]
-[assembly: AssemblyDescription("Actively compensates for field rotation on Alt-Azimuth mounts by calculating and commanding an OnStep rotator.")]
+[assembly: AssemblyDescription("Actively compensates for field rotation on Alt-Azimuth mounts.")]
 [assembly: AssemblyCompany("ArchitectJuan")]
 [assembly: AssemblyProduct("Alt-Az De-Rotator")]
 [assembly: AssemblyCopyright("Copyright © 2026 ArchitectJuan")]
