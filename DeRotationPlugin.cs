@@ -12,19 +12,18 @@ namespace AltAzDeRotator
     public class DeRotationPlugin : IPluginManifest
     {
         private DeRotationService? _deRotationService;
-        private readonly NINA.Equipment.Interfaces.Mediator.ITelescopeMediator _telescopeMediator;
-        private readonly NINA.Equipment.Interfaces.Mediator.IRotatorMediator _rotatorMediator;
+        
+        [Import]
+        private NINA.Equipment.Interfaces.Mediator.ITelescopeMediator? _telescopeMediator;
+        
+        [Import]
+        private NINA.Equipment.Interfaces.Mediator.IRotatorMediator? _rotatorMediator;
         
         [Import]
         private DeRotationViewModel? _viewModel;
 
-        [ImportingConstructor]
-        public DeRotationPlugin(
-            NINA.Equipment.Interfaces.Mediator.ITelescopeMediator telescopeMediator, 
-            NINA.Equipment.Interfaces.Mediator.IRotatorMediator rotatorMediator)
+        public DeRotationPlugin()
         {
-            _telescopeMediator = telescopeMediator;
-            _rotatorMediator = rotatorMediator;
         }
 
         // --- IPluginManifest Implementation ---
@@ -34,7 +33,7 @@ namespace AltAzDeRotator
         public string Author => "ArchitectJuan";
         public string Description => "Actively compensates for field rotation on Alt-Azimuth mounts.";
         
-        public IPluginVersion Version => new PluginVersion("1.1.0.0");
+        public IPluginVersion Version => new PluginVersion("1.1.0.1");
         public IPluginVersion MinimumApplicationVersion => new PluginVersion("3.0.0.9001");
 
         public string LicenseURL => "https://opensource.org/licenses/MPL-2.0";
@@ -52,16 +51,20 @@ namespace AltAzDeRotator
         {
             try
             {
-                Logger.Info("Initializing Alt-Az De-Rotator Plugin (V1.1.1)...");
+                Logger.Info("Initializing Alt-Az De-Rotator Plugin (V1.1.0.1)...");
                 
-                if (_viewModel != null)
+                if (_viewModel != null && _telescopeMediator != null && _rotatorMediator != null)
                 {
                     _deRotationService = new DeRotationService(_telescopeMediator, _rotatorMediator, _viewModel);
                     _deRotationService.Start();
                 }
                 else 
                 {
-                    Logger.Error("DeRotationPlugin: ViewModel could not be imported. UI initialization failed.");
+                    string missing = "";
+                    if (_viewModel == null) missing += "ViewModel ";
+                    if (_telescopeMediator == null) missing += "TelescopeMediator ";
+                    if (_rotatorMediator == null) missing += "RotatorMediator ";
+                    Logger.Error($"DeRotationPlugin: Initialization failed. Missing imports: {missing}");
                 }
                 
                 Logger.Info("Alt-Az De-Rotator Plugin initialized successfully.");
