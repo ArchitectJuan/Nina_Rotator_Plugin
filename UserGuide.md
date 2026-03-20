@@ -23,10 +23,11 @@ Welcome to the Alt-Az De-Rotator Plugin for N.I.N.A. This guide will walk you th
 
 ## 3. Operation
 
-The plugin operates silently in the background once initialized by N.I.N.A. 
+Once initialized, the plugin provides a dedicated UI for monitoring and control.
 
-1. **Connect your Equipment:** Open N.I.N.A., go to the **Equipment** tab, and connect both your Telescope and your Rotator.
-2. **Start Tracking:** Once your telescope is unparked and tracking, the plugin will automatically begin calculating the field rotation rate.
-3. **Automatic Adjustments:** Every second, the plugin calculates the required position offset. If the required change exceeds `0.01 degrees`, a command is issued to the Rotator to adjust its angle. 
+1. **Open the Status Window:** In N.I.N.A., go to the **Plugins** tab or check the **Windows** menu for "Alt-Az De-Rotator". This dockable window shows real-time Altitude, Azimuth, and calculated Rotation Rate.
+2. **Connect your Equipment:** Ensure both your Telescope and your Rotator are connected in the **Equipment** tab.
+3. **Enable/Disable:** Use the **Enable De-Rotation** checkbox in the plugin window to start or stop active compensation. 
+4. **Automatic Adjustments:** Every second, if enabled, the plugin calculates the required position offset. If the required change exceeds `0.01 degrees`, a command is issued to the Rotator. 
 
-*Note: You may see your rotator periodically make tiny adjustments throughout the night. This is expected behavior to compensate for geometric field rotation!*
+*Note: You can dock the status window anywhere in your N.I.N.A. layout to keep an eye on rotation during your session!*

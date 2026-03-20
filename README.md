@@ -5,11 +5,14 @@ This N.I.N.A. (Nighttime Imaging 'N' Astronomy) plugin actively compensates for 
 
 ## Features
 - **Real-time Telemetry:** Reads live Altitude, Azimuth, and site Latitude directly from your N.I.N.A. equipment profile.
+- **User Interface:** Dedicated dockable window to monitor current altitude, azimuth, rotation rate, and target position.
+- **On/Off Control:** Simple toggle switch to enable or disable active de-rotation as needed.
 - **Dynamic Calculation:** Uses a built-in math engine to compute the exact degrees of rotation required per second to offset Earth's rotation for Alt-Az setups.
 - **Micro-step Prevention:** Intelligent 0.01-degree thresholding ensures your Rotator is only commanded when necessary, preventing unnecessary hardware wear.
 - **N.I.N.A. 3.x Compatibility:** Built against the modern .NET 8.0 framework and N.I.N.A. 3.0 Managed Extensibility Framework (MEF).
 
 ## Version History
+- **V1.1.0:** Added User Interface and On/Off switch control. Migrated to DockableVM pattern.
 - **V1.0.0:** Initial Release. Features background polling service, dynamic rate calculation, and MEF dependency injection.
 
 ## Installation

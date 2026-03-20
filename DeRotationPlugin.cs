@@ -18,6 +18,9 @@ namespace AltAzDeRotator
         private DeRotationService? _deRotationService;
         private readonly NINA.Equipment.Interfaces.Mediator.ITelescopeMediator _telescopeMediator;
         private readonly NINA.Equipment.Interfaces.Mediator.IRotatorMediator _rotatorMediator;
+        
+        [Import]
+        private DeRotationViewModel? _viewModel;
 
         [ImportingConstructor]
         public DeRotationPlugin(
@@ -35,8 +38,11 @@ namespace AltAzDeRotator
                 Logger.Info("Initializing Alt-Az De-Rotator Plugin...");
                 
                 // Instantiate and start the background polling service
-                _deRotationService = new DeRotationService(_telescopeMediator, _rotatorMediator);
-                _deRotationService.Start();
+                if (_viewModel != null)
+                {
+                    _deRotationService = new DeRotationService(_telescopeMediator, _rotatorMediator, _viewModel);
+                    _deRotationService.Start();
+                }
                 
                 Logger.Info("Alt-Az De-Rotator Plugin initialized successfully.");
             }

@@ -11,11 +11,13 @@ namespace AltAzDeRotator
         private Task? _backgroundTask;
         private NINA.Equipment.Interfaces.Mediator.ITelescopeMediator? _telescopeMediator;
         private NINA.Equipment.Interfaces.Mediator.IRotatorMediator? _rotatorMediator;
+        private readonly DeRotationViewModel _viewModel;
 
-        public DeRotationService(NINA.Equipment.Interfaces.Mediator.ITelescopeMediator? telescopeMediator, NINA.Equipment.Interfaces.Mediator.IRotatorMediator? rotatorMediator)
+        public DeRotationService(NINA.Equipment.Interfaces.Mediator.ITelescopeMediator? telescopeMediator, NINA.Equipment.Interfaces.Mediator.IRotatorMediator? rotatorMediator, DeRotationViewModel viewModel)
         {
             _telescopeMediator = telescopeMediator;
             _rotatorMediator = rotatorMediator;
+            _viewModel = viewModel;
         }
 
         public void Start()
@@ -24,6 +26,8 @@ namespace AltAzDeRotator
             if (_cancellationTokenSource != null)
             {
                 _backgroundTask = Task.Run(() => BackgroundLoop(_cancellationTokenSource.Token));
+                _viewModel.IsActive = true;
+                _viewModel.Status = "Running";
             }
             Logger.Info("DeRotationService background loop started.");
         }
@@ -37,6 +41,8 @@ namespace AltAzDeRotator
                 _backgroundTask?.Wait(TimeSpan.FromSeconds(2));
                 _cancellationTokenSource.Dispose();
                 _cancellationTokenSource = null;
+                _viewModel.IsActive = false;
+                _viewModel.Status = "Stopped";
                 Logger.Info("DeRotationService background loop stopped.");
             }
         }
@@ -47,6 +53,13 @@ namespace AltAzDeRotator
             {
                 try
                 {
+                    if (!_viewModel.IsDeRotationEnabled)
+                    {
+                        _viewModel.Status = "Disabled";
+                        await Task.Delay(1000, token);
+                        continue;
+                    }
+
                     // Utilize mediators
                     if (_telescopeMediator != null && _rotatorMediator != null)
                     {
@@ -58,12 +71,16 @@ namespace AltAzDeRotator
                             double alt = telescope.Altitude;
                             double az = telescope.Azimuth;
                             
+                            _viewModel.Altitude = alt;
+                            _viewModel.Azimuth = az;
+
                             // Let's assume a default latitude for now if we can't fetch it
                             double lat = 40.0; 
 
                             // 2. Calculate required rotation rate using our MathEngine
                             double requiredRateDegreesPerHour = MathEngine.CalculateRotationRate(alt, az, lat);
-                            
+                            _viewModel.RotationRate = requiredRateDegreesPerHour;
+
                             // Calculate how many degrees we should move in this 1-second polling interval
                             double degreesPerSecond = requiredRateDegreesPerHour / 3600.0;
                             
@@ -78,6 +95,8 @@ namespace AltAzDeRotator
                                 
                                 newTargetPosition = newTargetPosition % 360.0;
                                 if (newTargetPosition < 0) newTargetPosition += 360.0;
+                                
+                                _viewModel.TargetPosition = newTargetPosition;
 
                                 if (Math.Abs(newTargetPosition - currentRotatorPosition) > 0.01) 
                                 {
@@ -88,6 +107,10 @@ namespace AltAzDeRotator
                                     }
                                 }
                             }
+                        }
+                        else
+                        {
+                             _viewModel.Status = "Telescope Disconnected";
                         }
                     }
                     
@@ -101,6 +124,7 @@ namespace AltAzDeRotator
                 catch (Exception ex)
                 {
                     Logger.Error($"Error in DeRotationService background loop: {ex.Message}");
+                    _viewModel.Status = $"Error: {ex.Message}";
                 }
             }
         }
